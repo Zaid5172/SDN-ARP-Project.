@@ -1,64 +1,84 @@
-# SDN ARP Project
+# SDN ARP Handling using POX Controller
+
+##  Overview
+
+This project implements *ARP handling in SDN* using the *POX controller* and *Mininet*.
+
+The controller:
+
+* Intercepts ARP packets
+* Learns IP–MAC mappings
+* Generates ARP replies
+* Forwards packets between hosts
+
+---
+
+## 🏗️ Topology
 
 
-
-## Objective
-
-Implement ARP request and reply handling using an SDN controller (Ryu).
+h1 —— s1 —— h2
 
 
+* h1 → Host 1 (10.0.0.1)
+* h2 → Host 2 (10.0.0.2)
+* s1 → Switch
+* POX → Controller
 
-## Requirements Met
+---
 
-1. Intercept ARP packets
+##  Setup & Run
 
-2. Generate ARP responses
+### 1. Run POX Controller
 
-3. Enable host discovery
+```bash
+cd ~/pox
+./pox.py misc.arp_sdn
+```
 
-4. Validate communication
+---
 
+### 2. Run Mininet
 
+```bash
+sudo mn -c
+sudo mn --topo single,2 --switch ovsk --controller remote,port=6633
+```
 
-## Tools Used
+---
 
-- Mininet (Network Emulator)
+### 3. Test
 
-- Ryu (SDN Controller)
+```bash
+mininet> h1 ping h2
+```
 
-- Open vSwitch (OpenFlow Switch)
+---
 
-- Python 3
+## 🔁 Working
 
+1. h1 sends ARP request
+2. Controller receives it
+3. Learns MAC and IP
+4. If unknown → flood
+5. If known → send ARP reply
+6. Packets are forwarded
 
-
-## How to Run
-
-
-
-### Terminal 1: Start the Controller
-ryu-manager arp_handler.py
-### Terminal 2: Start the Network
-sudo mn --controller=remote,ip=127.0.0.1 --mac --switch ovsk,protocols=OpenFlow13
-### Terminal 2: Run the Test
-
-mininet> h2 ping -c 1 10.0.0.1
-
-mininet> h1 ping -c 1 10.0.0.2
-
+---
 
 ## Expected Output
 
+```
+MAC LEARNED: ...
+ARP LEARNED: ...
+ARP FLOOD: ...
+ARP REPLY: ...
+FORWARD: ...
+```
 
+---
 
-### Terminal 1 (Controller Logs):
+##  Conclusion
 
-LEARNED: 10.0.0.2 is at 00:00:00:00:00:02
+The controller learns host information dynamically, handles ARP requests, and enables communication between hosts efficiently.
 
-LEARNED: 10.0.0.1 is at 00:00:00:00:00:01
-
-FOUND: 10.0.0.2 is in table. Replying.
-
-### Terminal 2 (Mininet):
-1 packets transmitted, 1 received, 0% packet loss
-
+---
