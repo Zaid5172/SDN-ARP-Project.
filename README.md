@@ -13,7 +13,7 @@ The controller:
 
 ---
 
-## 🏗️ Topology
+##  Topology
 
 
 h1 —— s1 —— h2
@@ -54,7 +54,7 @@ mininet> h1 ping h2
 
 ---
 
-## 🔁 Working
+##  Working
 
 1. h1 sends ARP request
 2. Controller receives it
